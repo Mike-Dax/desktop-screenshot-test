@@ -33,8 +33,12 @@ desktopCapturer
       console.log(e);
     }
 
+    const mappings = {};
+
     for (const source of sources) {
-      let filepath = path.join(baseDir, "screenshots", `${source.name}.png`);
+      let filepath;
+
+      const idFileName = source.id.replace(/[\W_]+/g, "_");
 
       if (source.name === "Entire Screen") {
         filepath = path.join(baseDir, "screenshots", `desktop.png`);
@@ -42,11 +46,18 @@ desktopCapturer
         filepath = path.join(baseDir, "screenshots", `application.png`);
       } else {
         // don't bother taking any of the other framebuffers
-        continue;
+        filepath = path.join(baseDir, "screenshots", `${idFileName}.png`);
       }
+
+      mappings[idFileName] = source.name;
 
       await renderSource(source, filepath);
     }
+
+    fs.writeFileSync(
+      path.join(baseDir, "screenshots", `mapping.json`),
+      JSON.stringify(mappings)
+    );
 
     // Quit when we're done
     ipcRenderer.send("quit");
