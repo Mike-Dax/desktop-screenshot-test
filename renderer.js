@@ -9,29 +9,36 @@ const path = require("path");
 
 const baseDir = process.platform === "win32" ? "C:\\" : "/tmp/";
 
-desktopCapturer.getSources({ types: ["screen"] }).then(async (sources) => {
-  // print each of our sources
-  console.log(sources);
+desktopCapturer
+  .getSources({ types: ["screen", "window"] })
+  .then(async (sources) => {
+    // print each of our sources
+    console.log(sources);
 
-  try {
-    fs.mkdirSync("/tmp/screenshots");
-  } catch (e) {
-    console.log(e);
-  }
-
-  for (const source of sources) {
-    let filepath = path.join(baseDir, "screenshots", `${source.name}.png`);
-
-    if (source.name === "Entire Screen") {
-      filepath = path.join(baseDir, "screenshots", `desktop.png`);
+    try {
+      fs.mkdirSync("/tmp/screenshots");
+    } catch (e) {
+      console.log(e);
     }
 
-    await renderSource(source, filepath);
-  }
+    for (const source of sources) {
+      let filepath = path.join(baseDir, "screenshots", `${source.name}.png`);
 
-  // Quit when we're done
-  ipcRenderer.send("quit");
-});
+      if (source.name === "Entire Screen") {
+        filepath = path.join(baseDir, "screenshots", `desktop.png`);
+      } else if (source.name === "screenshot-test") {
+        filepath = path.join(baseDir, "screenshots", `application.png`);
+      } else {
+        // don't bother taking any of the other framebuffers
+        continue;
+      }
+
+      await renderSource(source, filepath);
+    }
+
+    // Quit when we're done
+    ipcRenderer.send("quit");
+  });
 
 async function renderSource(source, filepath) {
   try {
@@ -68,6 +75,9 @@ async function renderSource(source, filepath) {
     const buf = Buffer.from(arraybuffer);
 
     fs.writeFileSync(filepath, buf);
+
+    // Free the resources
+    bitmap.close();
 
     console.log(filepath, buf);
   } catch (e) {
