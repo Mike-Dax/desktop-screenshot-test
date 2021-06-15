@@ -1,0 +1,16 @@
+{
+  "name": "screenshot-test",
+  "productName": "screenshot-test",
+  "description": "My Electron application description",
+  "keywords": [],
+  "main": "./main.js",
+  "version": "1.0.0",
+  "author": "michaelorenstein",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "11.4.8"
+  }
+}
