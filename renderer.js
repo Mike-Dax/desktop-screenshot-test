@@ -9,6 +9,18 @@ const path = require("path");
 
 const baseDir = process.platform === "win32" ? "C:\\" : "/tmp/";
 
+const root = document.getElementById("root");
+
+const newDiv = document.createElement("p");
+newDiv.textContent = JSON.stringify({
+  os: process.platform,
+  node: process.versions.node,
+  v8: process.versions.v8,
+  electron: process.versions.electron,
+});
+
+document.body.insertBefore(newDiv, root);
+
 desktopCapturer
   .getSources({ types: ["screen", "window"] })
   .then(async (sources) => {
