@@ -4,6 +4,4 @@ This little application boots up, takes a screenshot of the desktop including it
 
 # To Run
 
-`yarn` to install everything
-
-`yarn start` to run the test.
+`yarn` to install everything, `yarn start` to run the test.
